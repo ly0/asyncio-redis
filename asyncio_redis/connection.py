@@ -1,3 +1,4 @@
+import socket
 from .log import logger
 from .protocol import RedisProtocol, _all_commands
 import asyncio
@@ -91,7 +92,7 @@ class Connection:
             try:
                 logger.log(logging.INFO, 'Connecting to redis')
                 if self.port:
-                    yield from self._loop.create_connection(lambda: self.protocol, self.host, self.port)
+                    yield from self._loop.create_connection(lambda: self.protocol, self.host, self.port, flags=socket.TCP_NODELAY)
                 else:
                     yield from self._loop.create_unix_connection(lambda: self.protocol, self.host)
                 self._reset_retry_interval()
